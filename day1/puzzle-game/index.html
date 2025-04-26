@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>画像パズルゲーム</title>
+    <title>ネオモーフィック パズルゲーム</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <h1>画像パズルゲーム</h1>
+        <h1>ネオモーフィック<br>パズルゲーム</h1>
         
         <div class="upload-section">
             <label for="imageUpload">画像をアップロード:</label>
@@ -18,11 +21,22 @@
 
         <div class="game-controls">
             <select id="difficultySelect">
+                <option value="2">2x2 (超簡単)</option>
                 <option value="3">3x3 (簡単)</option>
                 <option value="4" selected>4x4 (普通)</option>
                 <option value="5">5x5 (難しい)</option>
+                <option value="6">6x6 (超難しい)</option>
             </select>
             <button id="restartButton" disabled>再スタート</button>
+        </div>
+
+        <div class="timer-container">
+            <div class="timer">
+                <span id="timerDisplay">03:00</span>
+                <div class="timer-progress">
+                    <div id="timerBar" class="timer-bar"></div>
+                </div>
+            </div>
         </div>
 
         <div class="puzzle-container">
