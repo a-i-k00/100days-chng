@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>画像パズルゲーム</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>画像パズルゲーム</h1>
+        
+        <div class="upload-section">
+            <label for="imageUpload">画像をアップロード:</label>
+            <input type="file" id="imageUpload" accept="image/*">
+            <button id="startButton" disabled>パズルを開始</button>
+        </div>
+
+        <div class="game-controls">
+            <select id="difficultySelect">
+                <option value="3">3x3 (簡単)</option>
+                <option value="4" selected>4x4 (普通)</option>
+                <option value="5">5x5 (難しい)</option>
+            </select>
+            <button id="restartButton" disabled>再スタート</button>
+        </div>
+
+        <div class="puzzle-container">
+            <div id="puzzle" class="puzzle"></div>
+            <div id="preview" class="preview">
+                <h3>プレビュー</h3>
+                <img id="previewImage" src="" alt="プレビュー画像">
+            </div>
+        </div>
+
+        <div id="message" class="message"></div>
+    </div>
+
+    <script src="js/puzzle.js"></script>
+</body>
+</html> 

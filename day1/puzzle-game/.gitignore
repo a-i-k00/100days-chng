@@ -1,0 +1,45 @@
+# OS固有のファイル
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# エディタの設定ファイル
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# 一時ファイル
+*.log
+*.tmp
+*.temp
+tmp/
+temp/
+
+# ユーザーがアップロードした画像（必要に応じて）
+uploads/
+user_images/
+
+# ノードモジュール（将来的にNodeを使う場合）
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# ビルドファイル
+dist/
+build/
+*.min.js
+*.min.css
+
+# ローカル環境設定
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local 
