@@ -1,0 +1,202 @@
+// ローカルイベントカレンダー Prismaスキーマ定義
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ユーザー管理
+model User {
+  id            String         @id @default(uuid())
+  name          String
+  email         String         @unique
+  password_hash String
+  role          String         @default("USER") // USER, ORGANIZER, ADMIN
+  profile_image String?
+  region_id     String
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
+  
+  // リレーション
+  region         Region          @relation(fields: [region_id], references: [id])
+  events         Event[]         @relation("CreatedByUser")
+  favorites      Favorite[]
+  participations Participation[]
+  shared_links   SharedLink[]
+  feedbacks      Feedback[]
+
+  @@map("users")
+}
+
+// イベント情報
+model Event {
+  id                String   @id @default(uuid())
+  title             String
+  description       String?
+  start_date        DateTime
+  end_date          DateTime
+  status            String   @default("PUBLISHED") // PLANNED, PUBLISHED, ENDED, CANCELLED
+  is_approved       Boolean  @default(true)
+  category_id       String
+  location_id       String
+  organizer_id      String
+  created_by_user_id String
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+  
+  // リレーション
+  category       Category        @relation(fields: [category_id], references: [id])
+  location       Location        @relation(fields: [location_id], references: [id])
+  organizer      Organizer       @relation(fields: [organizer_id], references: [id])
+  created_by     User            @relation("CreatedByUser", fields: [created_by_user_id], references: [id])
+  images         EventImage[]
+  favorites      Favorite[]
+  participations Participation[]
+  shared_links   SharedLink[]
+  feedbacks      Feedback[]
+
+  @@map("events")
+}
+
+// カテゴリー
+model Category {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  color       String
+  description String?
+  icon        String?
+  
+  // リレーション
+  events      Event[]
+
+  @@map("categories")
+}
+
+// 開催場所
+model Location {
+  id         String  @id @default(uuid())
+  name       String
+  address    String
+  region_id  String
+  latitude   Decimal?
+  longitude  Decimal?
+  
+  // リレーション
+  region     Region   @relation(fields: [region_id], references: [id])
+  events     Event[]
+
+  @@map("locations")
+}
+
+// 主催者
+model Organizer {
+  id           String  @id @default(uuid())
+  name         String
+  description  String?
+  contact_info String?
+  website      String?
+  logo         String?
+  
+  // リレーション
+  events       Event[]
+
+  @@map("organizers")
+}
+
+// 共有リンク
+model SharedLink {
+  id          String    @id @default(uuid())
+  event_id    String
+  user_id     String
+  unique_code String    @unique
+  expiry_date DateTime?
+  created_at  DateTime  @default(now())
+  
+  // リレーション
+  event       Event     @relation(fields: [event_id], references: [id])
+  user        User      @relation(fields: [user_id], references: [id])
+
+  @@map("shared_links")
+}
+
+// お気に入り
+model Favorite {
+  id         String   @id @default(uuid())
+  event_id   String
+  user_id    String
+  created_at DateTime @default(now())
+  
+  // リレーション
+  event      Event    @relation(fields: [event_id], references: [id])
+  user       User     @relation(fields: [user_id], references: [id])
+
+  @@unique([event_id, user_id])
+  @@map("favorites")
+}
+
+// 参加登録
+model Participation {
+  id         String   @id @default(uuid())
+  event_id   String
+  user_id    String
+  status     String   @default("PLANNED") // PLANNED, CONFIRMED, CANCELLED
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  
+  // リレーション
+  event      Event    @relation(fields: [event_id], references: [id])
+  user       User     @relation(fields: [user_id], references: [id])
+
+  @@unique([event_id, user_id])
+  @@map("participations")
+}
+
+// イベント画像
+model EventImage {
+  id          String   @id @default(uuid())
+  event_id    String
+  url         String
+  is_main     Boolean  @default(false)
+  alt_text    String?
+  uploaded_at DateTime @default(now())
+  
+  // リレーション
+  event       Event    @relation(fields: [event_id], references: [id])
+
+  @@map("event_images")
+}
+
+// フィードバック
+model Feedback {
+  id         String   @id @default(uuid())
+  event_id   String
+  user_id    String
+  rating     Int
+  comment    String?
+  created_at DateTime @default(now())
+  
+  // リレーション
+  event      Event    @relation(fields: [event_id], references: [id])
+  user       User     @relation(fields: [user_id], references: [id])
+
+  @@unique([event_id, user_id])
+  @@map("feedbacks")
+}
+
+// 地域
+model Region {
+  id          String     @id @default(uuid())
+  name        String
+  code        String     @unique
+  description String?
+  
+  // リレーション
+  users       User[]
+  locations   Location[]
+
+  @@map("regions")
+} 
