@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// イベント種別テーブル：イベントの分類とその表示スタイルを管理
+model EventType {
+  id        Int      @id @default(autoincrement())
+  name      String // イベント種別名（例：「市民講座」「お祭り」「スポーツイベント」）
+  color     String // 表示色（HEX形式）
+  icon      String? // アイコン識別子（任意）
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // リレーション
+  events Event[] // この種別に属するイベントのリスト
+}
+
+// イベントテーブル：各イベントの詳細情報を管理
+model Event {
+  id          String   @id @default(uuid())
+  title       String // イベントタイトル
+  description String? // イベントの説明
+  location    String? // 開催場所
+  startTime   DateTime // 開始日時
+  endTime     DateTime // 終了日時
+  allDay      Boolean  @default(false) // 終日イベントフラグ
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // 外部キー
+  eventTypeId Int // イベント種別ID
+  eventType   EventType @relation(fields: [eventTypeId], references: [id])
+
+  // インデックス
+  @@index([startTime])
+  @@index([endTime])
+  @@index([eventTypeId])
+}
